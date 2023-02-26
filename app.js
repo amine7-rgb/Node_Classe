@@ -1,23 +1,30 @@
-const express=require("express");
-const logger=require('morgan');
-const createdError=require('http-errors');
-const mongoose=require('mongoose');
-const dbconfig=require('./database/mongodb.json')
+const express =require('express')
 
-const contactsRouter=require('./routes/contacts.js');
+const app =express()
+const logger =require('morgan')
+const createError = require('http-errors');
+const mongoose = require('mongoose')
+const student = require('./routes/student')
 
-const app=express();
+mongoose.connect('mongodb://localhost:27017/StudentDB')
+
+
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
-app.use('/contact',contactsRouter);
-
-app.use((req,res,next)=>{
-    next(createdError(404));
-    mongoose.connect(dbconfig.mongo.uri);
-})
+app.use(express.urlencoded({ extended: false}));
 
 
+app.use('/student',student)
 
-module.exports=app;
+
+app.use((req, res, next) => {
+    next(createError(404));
+});
+
+
+
+
+module.exports = app
